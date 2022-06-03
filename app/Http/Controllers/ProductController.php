@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\ProductService;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    private $productService;
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+        parent::__construct();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -106,5 +113,9 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function listProduct(Request $request){
+        $products = $this->productService->getProduct($request);
+        return  $this->responseSuccess($products);
     }
 }
