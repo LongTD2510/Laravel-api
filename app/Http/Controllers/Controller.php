@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -37,5 +38,11 @@ class Controller extends BaseController
             'message' => $message,
         ];
         return $this->response->json($res, $code);
+    }
+    public function handleException(Exception $e)
+    {
+        $message = $e->getMessage();
+        $code    = $e->getCode();
+        return $this->responseError($message, $code);
     }
 }

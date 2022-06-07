@@ -36,7 +36,7 @@
                 <tr>
                     <td scope="row">{{$product->name}}</td>
                     <td class="w-25">
-                        <img class= "img-thumbnail rounded w-50" src="{{ asset('uploads/' . $product->image_link) }}" alt="">
+                        <img class= "img-thumbnail rounded w-50" src="{{ $product->image_link }}" alt="">
                     </td>
                     <td>{{$product->price}}</td>
                     <td>{{$product->description}}</td>

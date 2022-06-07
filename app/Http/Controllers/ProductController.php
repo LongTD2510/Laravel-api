@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateOrUpdateRequest;
+use App\Http\Requests\ProductRequest;
+use App\Http\Requests\updateProduct;
 use App\Http\Services\ProductService;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -23,7 +26,7 @@ class ProductController extends Controller
     {
         //
         $products = Product::paginate(5);
-        return view('product.product',['products'=> $products]);
+        return view('product.product', ['products' => $products]);
     }
 
     /**
@@ -46,25 +49,25 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $products = new product;
-        $products->name = $request->name_product;
-        $products->price = $request->price_product;
+        $products              = new product;
+        $products->name        = $request->name_product;
+        $products->price       = $request->price_product;
         $products->description = $request->des_product;
 
         $request->validate([
-            'name_product' => 'required',
-            'image_product' => 'mimes:png,jpg,jpeg|max:2048'
+            'name_product'  => 'required',
+            'image_product' => 'nullable|mimes:png,jpg,jpeg|max:2048',
         ]);
-        if($request->hasfile('image_product')) {
-            $file = $request->image_product;
-            $random = random_int(10000, 99999);
-            $fileName = $random .'.'.$file->getClientOriginalName(); 
-            $file->move(public_path('uploads'),$fileName);
+        if ($request->hasfile('image_product')) {
+            $file     = $request->image_product;
+            $random   = random_int(10000, 99999);
+            $fileName = $random . '.' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $fileName);
             $products->image_link = $fileName;
             $products->save();
         }
         return redirect()->route('product.index')
-        ->with('success','Product add successfully');
+            ->with('success', 'Product add successfully');
     }
 
     /**
@@ -89,7 +92,7 @@ class ProductController extends Controller
     {
         //
         $product = Product::find($id);
-        return view('product.editProduct',compact('product'));
+        return view('product.editProduct', compact('product'));
     }
 
     /**
@@ -114,8 +117,29 @@ class ProductController extends Controller
     {
         //
     }
-    public function listProduct(Request $request){
-        $products = $this->productService->getProduct($request);
-        return  $this->responseSuccess($products);
+
+    public function listProduct(Request $request)
+    {
+        $products = $this->productService->getProduct($request->all());
+        return $this->responseSuccess($products);
+    }
+
+    public function updateProduct(CreateOrUpdateRequest $requestProduct)
+    {
+        $product = $this->productService->updateProduct($requestProduct);
+        return $this->responseSuccess($product);
+    }
+
+    public function createProduct(updateProduct $requestProduct)
+    {
+        $product = $this->productService->createProduct($requestProduct);
+        return $this->responseSuccess($product);
+    }
+    
+    public function deleteProduct(ProductRequest $productRequest)
+    {
+        # code...
+        $product = $this->productService->delete($productRequest['product_id']);
+        return $this->responseSuccess($product);
     }
 }
