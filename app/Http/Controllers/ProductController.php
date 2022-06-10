@@ -142,4 +142,16 @@ class ProductController extends Controller
         $product = $this->productService->delete($productRequest['product_id']);
         return $this->responseSuccess($product);
     }
+
+    public function searchProduct(Request $request)
+    {
+        $params = $request->only(['name_product','price','start_date']);
+        // $params = $request->all();
+        // $validator = $this->productService->validateSearch($params);
+        // if ($validator->fails()) {
+        //     return $this->responseError($validator->messages());
+        // }
+        $result = $this->productService->searchProduct($params);
+        return $this->responseSuccess($result);
+    }
 }

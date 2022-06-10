@@ -21,19 +21,19 @@ class CreateOrUpdateRequest extends FormRequest
     {
         return [
             //
-            'product_id' => 'required|integer',
+            'product_id'   => 'required|integer',
             'product_name' => 'required|string|max:255',
-            'image' => 'mimes:png,jpg,jpeg|max:2048',
-            'price' => 'required|integer',
-            'description' => 'required|string|max:200',
+            'image'        => 'mimes:png,jpg,jpeg|max:2048',
+            'price'        => 'required|numeric|min:0',
+            'description'  => 'required|string|max:200',
         ];
     }
     public function messages()
     {
         return [
-            'required' => ':attribute cannot be blank.',
-            'image.mimes' => ':attribute incorrect format',
-            'description.max' => 'The description cannot exceed  200 characters.',
+            'required'        => 'The :attribute cannot be blank.',
+            'image.mimes'     => 'The :attribute incorrect format png,jpg,jpeg',
+            'description.max' => 'The description cannot exceed 200 characters.',
         ];
     }
 }

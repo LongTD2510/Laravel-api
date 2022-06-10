@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Http\Responses\ErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class Handler extends ExceptionHandler
 {
@@ -33,5 +37,25 @@ class Handler extends ExceptionHandler
     public function register()
     {
         //
+        $this->renderable(function (Throwable $e) {
+            // if ($request->is('api/*')) {
+            //     return response()->json(
+            //         [
+            //             'message' => 'Object not found',
+            //             'code'    => 404,
+            //         ], 404);
+            // }
+        });
+    }
+    
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() === 401) {
+            throw new AuthenticationException();
+        }
+        $errorResponse = new ErrorResponse($e);
+        $response = $errorResponse->toResponse();
+
+        return response()->json($response, $errorResponse->httpCode);
     }
 }
