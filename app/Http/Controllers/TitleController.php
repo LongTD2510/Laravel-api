@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class TitleController extends Controller
 {
     //
-    private $titleService;
+    protected $titleService;
     public function __construct(TitleService $titleService)
     {
         $this->titleService = $titleService;

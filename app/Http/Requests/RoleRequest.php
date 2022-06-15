@@ -4,17 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class updateCategory extends FormRequest
+class RoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -25,14 +21,15 @@ class updateCategory extends FormRequest
     {
         return [
             //
-            'category_id' => 'required|integer',
-            'product_id' => 'required|integer'
+            "user_id" => "required|integer",
+            "role_id" => "required|integer"
         ];
     }
+
     public function messages()
     {
-        return [
-            'required' => 'The :attribute cannot be blank.',
+        return[
+            "required" => "The :attribute cannot be blank."
         ];
     }
 }

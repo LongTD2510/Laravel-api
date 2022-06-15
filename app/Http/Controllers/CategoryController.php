@@ -38,7 +38,6 @@ class CategoryController extends Controller
             if(!$res){
                 return $this->responseError(__('messages.category_not_found'),446);
             }
-            dd($res);
             return $this->responseSuccess($res);
         } catch (Exception $exception) {
             return $this->handleException($exception);
