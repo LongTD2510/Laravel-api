@@ -86,7 +86,7 @@ class ErrorResponse
         }
     }
 
-    public function transformMessageModelNotFound($exception): string
+    function transformMessageModelNotFound($exception): string
     {
         $modelNameExploded = explode("\\", $exception->getModel());
         $modelName         = $modelNameExploded[count($modelNameExploded) - 1];
