@@ -29,8 +29,8 @@ class ProductService
             if ($request->has('image')) {
                 $extension           = $request->image->getClientOriginalExtension();
                 $fileName            = pathinfo($request->image->getClientOriginalName(), PATHINFO_FILENAME);
-                $fileNameToStore     = 'public/images/product/' . $fileName . '.' . $extension;
-                $path                = $request->file('image')->storeAs('', $fileNameToStore);
+                $fileNameToStore     = '/images/product/' . $fileName . '.' . $extension;
+                $path                = $request->file('image')->storeAs('', $fileNameToStore,'public');
                 $imageURL            = Storage::url($path);
                 $product->image_link = url($imageURL);
             }
