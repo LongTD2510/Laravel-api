@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Requests\RoleRequest;
 use App\Http\Services\UserService;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     //
+    protected $userService;
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
@@ -63,4 +66,11 @@ class UserController extends Controller
         return $this->responseSuccess($resuls);
     }
 
+    public function chooseRole(RoleRequest $roleRequest)
+    {
+        $params = $roleRequest->all();
+        $user   = $this->userService->makeRoleUser($params);
+        $result   = $this->userService->getUserById($params['user_id']);
+        return $this->responseSuccess($result);
+    }
 }

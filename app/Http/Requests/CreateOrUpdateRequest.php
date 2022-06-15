@@ -22,6 +22,7 @@ class CreateOrUpdateRequest extends FormRequest
         return [
             //
             'product_id'   => 'required|integer',
+            'category_id'   => 'nullable|integer',
             'product_name' => 'required|string|max:255',
             'image'        => 'mimes:png,jpg,jpeg|max:2048',
             'price'        => 'required|numeric|min:0',

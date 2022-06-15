@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TitleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -23,7 +24,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::post('login', [UserController::class, "login"]);
 Route::post('register', [UserController::class, "register"]);
-
+Route::post('choose-role', [UserController::class,'chooseRole']);
+Route::get('roles', [RoleController::class,'listRole']);
 Route::middleware(['auth:api'])->group(
     function () {
         Route::get('titles', [TitleController::class, "listTitle"]);
@@ -36,8 +38,10 @@ Route::middleware(['auth:api'])->group(
             Route::get('search', [ProductController::class, "searchProduct"]);
             Route::post('update-product', [ProductController::class, "updateProduct"]);
             Route::post('create-product', [ProductController::class, "createProduct"]);
+            Route::post('choose-category', [ProductController::class, "chooseCategoryProduct"]);
             Route::delete('delete', [ProductController::class, "deleteProduct"]);
         });
-        Route::get('logout', [UserController::class,'logout']);
+        Route::get('logout', [UserController::class, 'logout']);
     }
 );
+

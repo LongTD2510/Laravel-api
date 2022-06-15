@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrUpdateRequest;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\updateCategory;
 use App\Http\Requests\updateProduct;
 use App\Http\Services\ProductService;
 use App\Models\Product;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    private $productService;
+    protected $productService;
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
@@ -138,7 +139,6 @@ class ProductController extends Controller
     
     public function deleteProduct(ProductRequest $productRequest)
     {
-        # code...
         $product = $this->productService->delete($productRequest['product_id']);
         return $this->responseSuccess($product);
     }
@@ -146,12 +146,18 @@ class ProductController extends Controller
     public function searchProduct(Request $request)
     {
         $params = $request->only(['name_product','price','start_date']);
-        // $params = $request->all();
-        // $validator = $this->productService->validateSearch($params);
-        // if ($validator->fails()) {
-        //     return $this->responseError($validator->messages());
-        // }
+        $validator = $this->productService->validateSearch($params);
+        if ($validator->fails()) {
+            return $this->responseError($validator->messages());
+        }
         $result = $this->productService->searchProduct($params);
+        return $this->responseSuccess($result);
+    }
+
+    public function chooseCategoryProduct(updateCategory $requestUpdateCate)
+    {
+        $params = $requestUpdateCate->only(['category_id','product_id']);
+        $result = $this->productService->updateCategoryByProductId($params);
         return $this->responseSuccess($result);
     }
 }
