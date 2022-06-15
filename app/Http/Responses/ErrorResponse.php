@@ -81,7 +81,7 @@ class ErrorResponse
                 return [
                     'success' => false,
                     'code'    => $this->httpCode,
-                    'message' => __('message.unknown_occurred'),
+                    'message' => __('messages.unknown_occurred'),
                 ];
         }
     }
