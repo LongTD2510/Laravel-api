@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class ProductService
 {
     public function getProduct()
@@ -26,15 +26,21 @@ class ProductService
             $product->image_link  = $request['image'];
             $product->price       = $request['price'];
             $product->description = $request['description'];
+
             if ($request->has('image')) {
-                $extension           = $request->image->getClientOriginalExtension();
-                $fileName            = pathinfo($request->image->getClientOriginalName(), PATHINFO_FILENAME);
-                $fileNameToStore     = '/images/product/' . $fileName . '.' . $extension;
-                $path                = $request->file('image')->storeAs('', $fileNameToStore,'public');
-                $imageURL            = Storage::url($path);
-                $product->image_link = url($imageURL);
+                $response = Cloudinary()->upload($request->file('image')->getRealPath(),[
+                    'folder' => 'API Heruko'
+                ])->getSecurePath();
+                // $extension           = $request->image->getClientOriginalExtension();
+                // $fileName            = pathinfo($request->image->getClientOriginalName(), PATHINFO_FILENAME);
+                // $fileNameToStore     = '/images/product/' . $fileName . '.' . $extension;
+                // $path                = $request->file('image')->storeAs('', $fileNameToStore,'public');
+                // $imageURL            = Storage::url($path);
+                $product->image_link = $response;
             }
+
             $product->save();
+
             return $product;
         }, 5);
     }
@@ -56,12 +62,15 @@ class ProductService
         $resultUpdate->category_id = $request['category_id'];
 
         if ($request->has('image')) {
-            $extension                = $request->image->getClientOriginalExtension();
-            $fileName                 = pathinfo($request->image->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileNameToStore          = 'public/images/product/' . $fileName . '.' . $extension;
-            $path                     = $request->file('image')->storeAs('', $fileNameToStore, 'public');
-            $imageURL                 = Storage::url($path);
-            $resultUpdate->image_link = url($imageURL);
+            $response = Cloudinary()->upload($request->file('image')->getRealPath(),[
+                'folder' => env('FOLDER_CLOUDINARY')
+            ])->getSecurePath();
+            // $extension           = $request->image->getClientOriginalExtension();
+            // $fileName            = pathinfo($request->image->getClientOriginalName(), PATHINFO_FILENAME);
+            // $fileNameToStore     = '/images/product/' . $fileName . '.' . $extension;
+            // $path                = $request->file('image')->storeAs('', $fileNameToStore,'public');
+            // $imageURL            = Storage::url($path);
+            $resultUpdate->image_link = $response;
         }
 
         $resultUpdate->update();

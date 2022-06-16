@@ -9,6 +9,7 @@ use App\Http\Requests\updateProduct;
 use App\Http\Services\ProductService;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -50,7 +51,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $products              = new product;
+        $products              = new Product;
         $products->name        = $request->name_product;
         $products->price       = $request->price_product;
         $products->description = $request->des_product;
@@ -60,11 +61,12 @@ class ProductController extends Controller
             'image_product' => 'nullable|mimes:png,jpg,jpeg|max:2048',
         ]);
         if ($request->hasfile('image_product')) {
-            $file     = $request->image_product;
-            $random   = random_int(10000, 99999);
-            $fileName = $random . '.' . $file->getClientOriginalName();
-            $file->move(public_path('uploads'), $fileName);
-            $products->image_link = $fileName;
+            $extension           = $request->image->getClientOriginalExtension();
+            $fileName            = pathinfo($request->image->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameToStore     = '/images/product/' . $fileName . '.' . $extension;
+            $path                = $request->file('image')->storeAs('', $fileNameToStore,'public');
+            $imageURL            = Storage::url($path);
+            $products->image_link = url($imageURL);
             $products->save();
         }
         return redirect()->route('product.index')
